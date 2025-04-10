@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\"  \"cd ../taiyo-reservation-back && npm run dev\"",
+    "dev": "concurrently \"next dev\"  \"cd ../backend && npm run dev\"",
     "build": "next build",
-    "start": "concurrently \"next start -p 80 \"  \"cd ../taiyo-reservation-back && npm run start \"",
+    "start": "concurrently \"next start -p 80 \"  \"cd ../backend && npm run start \"",
     "lint": "next lint"
   },
   "dependencies": {
