@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@font-face {
+  font-family: 'Onest';
+  src: url('../../public/assets/fonts/Onest-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Onest';
+  src: url('../../public/assets/fonts/Onest-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Onest';
+  src: url('../../public/assets/fonts/Onest-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Onest';
+  src: url('../../public/assets/fonts/Onest-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Onest', sans-serif;
+}
+
+.Toastify__toast {
+  background-color: #242c32 !important;
+  border-radius: 8px;
+  box-shadow: 10px 10px 40px #00000012 !important;
+  padding: 0;
+  width: 343px !important;
+  width: 100%;
+  right: 30px;
+}
+
+.Toastify__toast--success {
+  background-image: radial-gradient(circle 212px at 20px 50%, #00ed7b12, #242c32) !important;
+}
+
+.Toastify__toast--warning {
+  background-image: radial-gradient(circle 212px at 20px 50%, #ffd42611, #242c32) !important;
+}
+
+.Toastify__toast--error {
+  background-image: radial-gradient(circle 212px at 20px 50%, #f0424813, #242c32) !important;
+}
+
+/* Custom scrollbar for the container */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 30px; /* Width of the scrollbar */
+  height: 5px; /* Height of the scrollbar */
+  transform: rotate(-90deg); /* Rotate scrollbar */
+  background: #d1d1d11a; /* Scrollbar background color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--LightBlue, #BDD2EFE5); /* Thumb color */
+  border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--LightBlue, #A0C0E5); /* Thumb color on hover */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  height: 0px;
+  display: none; /* Remove scrollbar buttons */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: 5px; /* Thin scrollbar */
+  scrollbar-color: var(--LightBlue, #BDD2EFE5) #9b9b9b1a; /* Thumb and track colors */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .Toastify__toast {
+    margin-top: 20px;
+    max-width: 90% !important;  /* Make the toast smaller on mobile */
+    left: 5% !important;        /* Add some margin from the sides */
+    right: 5% !important;
+    width: auto !important;     /* Allow the toast to adjust to content width */
+  }
+
+  .Toastify__toast .message-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .Toastify__toast--success,
+  .Toastify__toast--warning,
+  .Toastify__toast--error {
+    padding: 12px;  /* Increase padding for better visibility */
+  }
+}
