@@ -21,7 +21,7 @@ const CustomCheckbox = ({ id, label, isChecked, onChangeHandler, error }: Props)
         <input
           type="checkbox"
           id={id}
-          className="appearance-none w-3.5 h-3.5 bg-white border border-gray-700 rounded checked:bg-black checked:border-black checked:after:content-['✔'] checked:after:block checked:after:text-white checked:after:scale-90 checked:after:text-center flex items-center justify-center"
+          className="appearance-none w-3.5 h-3.5 bg-[#FFFFFF] border border-gray-700 rounded checked:bg-black checked:border-black checked:after:content-['✔'] checked:after:block checked:after:text-white checked:after:scale-90 checked:after:text-center flex items-center justify-center"
           checked={isChecked} // Set the checkbox's checked state based on the prop
           onChange={handleCheckboxChange} // Trigger the change when the checkbox is clicked
         />

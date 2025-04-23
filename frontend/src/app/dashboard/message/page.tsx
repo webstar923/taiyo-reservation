@@ -121,7 +121,7 @@ const Message = () => {
               </tbody>         
             </table> 
             <div className="flex justify-center">
-              <Stack spacing={2} className='bg-white mt-1 rounded-[10px] py-1 px-5'>                    
+              <Stack spacing={2} className='bg-[#FFFFFF] mt-1 rounded-[10px] py-1 px-5'>                    
                 <Pagination 
                   color="primary" 
                   count={Math.ceil(sortedErrors.length / itemsPerPage)} 

@@ -93,7 +93,7 @@ const Chat = () => {
               <div className="flex w-full gap-3 flex-wrap mt-[10px]">
                   {message.options && message.options.map((option:string, idx:number) => (
                     <div key={idx}
-                      className={`border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer ${chatData.requirement ===　option  ? "bg-[#0f1430] text-white" : "bg-white"}`}
+                      className={`border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer ${chatData.requirement ===　option  ? "bg-[#0f1430] text-white" : "bg-[#FFFFFF]"}`}
                       onClick={() => {handleButtonClick(option,'button');}}
                     >
                       <p className="font-normal leading-[28px]  text-[15px] break-all">{option}</p>
@@ -162,7 +162,7 @@ const Chat = () => {
                       : "shadow-[1px_2px_20px_0px_rgba(0,0,0,0.4)]"
                   )}
                 >
-                <div className="absolute inset-0 bg-white/70"></div>
+                <div className="absolute inset-0 bg-[#FFFFFF]/70"></div>
                   <p className="font-semibold text-[20px] leading-[25.5px] text-[#091428] opacity-100 relative">
                     予約番号：{message.options.id}
                   </p>
@@ -218,7 +218,7 @@ const Chat = () => {
                       {
                         message.options && message.options.length > 0 && (
                           message.options.map((option: Option, idx: number) => (
-                            <tr key={idx} className="hover:bg-gray-100 even:bg-gray-50 odd:bg-white">
+                            <tr key={idx} className="hover:bg-gray-100 even:bg-gray-50 odd:bg-[#FFFFFF]">
                               <td className="px-4 py-3 border-b border-gray-300">{option.id}</td>
                               <td className="px-4 py-3 border-b border-gray-300">{option.flat_name}</td>
                               <td className="px-4 py-3 border-b border-gray-300">{option.room_num}</td>

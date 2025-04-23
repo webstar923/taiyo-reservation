@@ -8,7 +8,7 @@ interface ContentWrapperProps {
 
 const ContentWrapper: React.FC<ContentWrapperProps> = ({ children, className }) => {
   return (
-    <div className={clsx("bg-white p-[20px] md:rounded-[14px] md:ml-[30px] md:mr-[30px] mb-[24px] sm:mb-[20px]", className)}>
+    <div className={clsx("bg-[#FFFFFF] p-[20px] md:rounded-[14px] md:ml-[30px] md:mr-[30px] mb-[24px] sm:mb-[20px]", className)}>
       {children}
     </div>
   )

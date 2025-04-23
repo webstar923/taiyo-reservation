@@ -29,7 +29,7 @@ const CustomSwitch: React.FC<Props> = ({ label, activeValue, onChange }) => {
       >
         {/* Circle */}
         <div
-          className={`relative w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
+          className={`relative w-6 h-6 bg-[#FFFFFF] rounded-full shadow-md transition-transform duration-300 ${
             isActive ? 'translate-x-4' : 'translate-x-0'
           }`}
         >

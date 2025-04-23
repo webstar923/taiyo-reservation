@@ -13,7 +13,7 @@
 //         {/* Grid View Option */}
 //         <button
 //           className={`flex items-center justify-center w-[3.4rem] h-[2rem] rounded-l-full border-r border-solid ${
-//             activeView === "grid" ? "bg-gray-100" : "bg-white"
+//             activeView === "grid" ? "bg-gray-100" : "bg-[#FFFFFF]"
 //           }`}
 //           onClick={() => setActiveView("grid")}
 //         >
@@ -27,7 +27,7 @@
 //         {/* List View Option */}
 //         <button
 //           className={`flex items-center justify-center w-[3.4rem] h-[2rem] rounded-r-full ${
-//             activeView === "list" ? "bg-gray-100" : "bg-white"
+//             activeView === "list" ? "bg-gray-100" : "bg-[#FFFFFF]"
 //           }`}
 //           onClick={() => setActiveView("list")}
 //         >

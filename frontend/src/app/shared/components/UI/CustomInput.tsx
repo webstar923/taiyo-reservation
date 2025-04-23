@@ -55,7 +55,7 @@ const CustomInput = ({
           onChange={handleChange}
           required
           disabled={disabled}
-          className={`w-full py-4 px-4 pr-3 rounded-[6px] bg-light-gray border mt-1 ${
+          className={`w-full py-4 px-4 pr-3 rounded-[6px] bg-light-gray border mt-1 text-[#000000] ${
             error ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder={placeholder}

@@ -34,7 +34,7 @@ const Modal = ({ children, isOpen, onClose }: ModalProps) => {
       onClick={handleOverlayClick} // Close modal if overlay is clicked
     >
       <div
-        className="bg-white rounded-xl shadow-lg w-[90%] max-w-lg" // Modal content styles
+        className="bg-[#FFFFFF] rounded-xl shadow-lg w-[90%] max-w-lg" // Modal content styles
       >
         {children}
       </div>

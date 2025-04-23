@@ -57,7 +57,7 @@ const WorkView = () => {
     
       {/* Content with remaining height */}
       <div className="flex flex-col flex-grow  bg-[url('/assets/images/download.webp')] bg-cover bg-no-repeat justify-center items-center ">
-        <div className="flex bg-white h-[70vh]  rounded-[30px] p-5 relative gap-5">
+        <div className="flex bg-[#FFFFFF] h-[70vh]  rounded-[30px] p-5 relative gap-5">
           <div className="flex flex-col  bg-[#FFFFFF] p-5 rounded-[20px] relative overflow-auto">
             <div className={`flex gap-2 mt-3`}>
               <Image

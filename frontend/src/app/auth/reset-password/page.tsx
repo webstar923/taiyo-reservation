@@ -115,7 +115,7 @@ const ResetPassword = () => {
           </div>
           <div className="flex justify-between p-5 items-center">
             <CustomButton type="submit" isLoading={false} label="リセット" className="hover:opacity-80" />
-            <Link href="/auth/login" className="flex rounded-lg bg-white">
+            <Link href="/auth/login" className="flex rounded-lg bg-[#FFFFFF]">
               <h4 className="hover:text-blue-800">ログインに戻る</h4>
             </Link>
           </div>

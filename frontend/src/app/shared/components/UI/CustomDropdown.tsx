@@ -79,7 +79,7 @@ const CustomDropdown = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-[2rem] right-0 mt-1 sm:w-full w-[13.3rem] bg-white border border-gray-200 rounded-md shadow-lg z-20">
+        <div className="absolute top-[2rem] right-0 mt-1 sm:w-full w-[13.3rem] bg-[#FFFFFF] border border-gray-200 rounded-md shadow-lg z-20">
           {options.map((option, index) => (
             <div
               key={index}

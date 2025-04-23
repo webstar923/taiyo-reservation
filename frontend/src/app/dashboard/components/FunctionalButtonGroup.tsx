@@ -74,7 +74,7 @@ const FunctionalButtonGroup = ({
         </button>
 
         {isDropdownOpen && (
-          <div className="absolute top-2 right-5 p-3 mt-1 w-[13.3rem] bg-white border border-gray-200 rounded-md shadow-lg z-40">
+          <div className="absolute top-2 right-5 p-3 mt-1 w-[13.3rem] bg-[#FFFFFF] border border-gray-200 rounded-md shadow-lg z-40">
             {OPTIONS.map((option, index) => (
               <div
                 key={index} 

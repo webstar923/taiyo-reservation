@@ -12,7 +12,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
     <div className="auth relative min-h-screen flex flex-col bg-cover bg-no-repeat sm:flex-row">
 
       {/* Background - Fixed position */}
-      <div className="fixed inset-0 bg-[url('/assets/images/Mask_pattern.png')] bg-cover bg-no-repeat opacity-[10%] pointer-events-none z-[-1]"></div>
+      <div className="fixed inset-0 bg-cover bg-no-repeat bg-[#FFFFFF] pointer-events-none z-[-1]"></div>
       
       {/* Left Side - Image */}
       <div className="sticky top-0 flex-1 flex justify-center items-center hidden md:block md:h-[100vh] w-[10px]">
