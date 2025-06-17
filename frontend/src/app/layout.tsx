@@ -44,7 +44,7 @@ export default async function LocaleLayout({
       <head>
         <title>Full Value</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/assets/images/tree.png" type="image/png" />
+        <link rel="icon" href="/assets/images/short_logo.png" type="image/png" />
       </head>
       <body className={`${onestFont.variable}`}>
         <NextIntlClientProvider>
