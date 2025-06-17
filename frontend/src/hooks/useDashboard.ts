@@ -70,6 +70,9 @@ export const useDashboard = () => {
   // Get Work Data
   const getWorkData = async () => fetchData('/api/work/getAllData');
 
+  // Get Work Data by Flat
+  const getWorkDataByFlat = async (id: number) => fetchData(`/api/work/getWorkDataByFlat/${id}`);
+
   // Get User Data
   const getUserData = async () => fetchData('/api/user/getAllData');
 
@@ -105,11 +108,14 @@ export const useDashboard = () => {
 
   const uploadReservationData = async (body: FormData) => fetch('/api/reservation/uploadReservationData', {method: 'POST',  body });
  
+  const changeFlatDetailInfo = async (body: any) => fetchData('/api/flat/changeFlatDetailInfo', { method: 'POST', body: JSON.stringify(body) });
 
+  const getFlatDetailInfoByflatId = async (id: number) => fetchData(`/api/flat/getFlatDetailInfoByflatId/${id}`);
   return {
     getFlatData, changeFlat, createFlat, deleteFlat, getWorkData, createWork, changeWork, deleteWork,
     getUserData, changeUser, deleteUser, createUser, getErrorLogData, getChangeLogData, getApiLogData,
     getNotificationNum, getNotification, markAsRead, getReservationListData, updateReservation, deleteReservation,
-    createReservation, getDashboardData, loading, error,uploadReservationData
+    createReservation, getDashboardData, loading, error,uploadReservationData,getWorkDataByFlat,changeFlatDetailInfo,
+    getFlatDetailInfoByflatId
   };
 };

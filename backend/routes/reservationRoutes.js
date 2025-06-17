@@ -2,7 +2,8 @@ const express = require('express');
 const { 
         findFlat, findWork, findReservation, findChangeDate, 
         updatReservation, getChangeableDate, createReservation,
-        getReservations,getReservationListData,deleteReservation
+        getReservations,getReservationListData,deleteReservation,
+        cancelReservation
         ,getDashboardData,findReservationByRoomNum
      } = require('../controllers/reservationController');
 
@@ -21,6 +22,7 @@ router.post('/getReservations',getReservations);
 router.post('/getReservationListData',getReservationListData);
 router.post('/deleteReservation',deleteReservation);
 router.get('/getDashboardData',getDashboardData);
+router.post('/cancelReservation',cancelReservation);
 
 
 module.exports = router;

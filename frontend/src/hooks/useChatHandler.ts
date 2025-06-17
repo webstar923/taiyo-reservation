@@ -53,6 +53,14 @@ export const useChatHandler = () => {
     } else if(option === "いいえ" || option === "戻る"|| option === "次へ"  || option === "終了" || option === "変更しない"){
       resetForm(); 
       return addMessage(chatMessages.welcomeAgain);
+    }else if(option === "キャンセル（作業なし）"){
+      const res = await fetch('/api/reservation/cancelReservation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({reservation_id:value}),
+      });
+      resetForm(); 
+      return addMessage(chatMessages.welcomeAgain);
     }   
     resetForm();     
     setField('requirement',option);

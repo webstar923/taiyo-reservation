@@ -12,6 +12,7 @@ import { notify } from '@/utils/notification';
 import { EventClickArg } from '@fullcalendar/core';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 interface Event {
   id:string;
@@ -31,19 +32,18 @@ const currencies = [
     value: '午後',
     label: '午後',
   },
-  {
-    value: 'どちらても',
-    label: 'どちらても',
-  },
-];
+  ];
 
-const Calendar = () => {
+const Reservation = () => {
   const {getReservationListData,updateReservation,deleteReservation,createReservation} = useDashboard();
   const [selectedEvent, setSelectedEvent] = useState<{id:string,user_name:string,flat_name:string,room_num:string,work_name:string,reservation_time:string,division:string} | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const calendarRef = useRef(null); 
   const [originalData,setOriginalData] = useState<{id:string,user_name:string,flat_name:string,room_num:string,work_name:string,reservation_time:string,division:string}[]>([]);
   const [changedData,setChangedData] = useState<{ id: string, title: string, date: string }[] |[]>([]);
+
+  
+  
  
   const handleEventClick = (clickInfo:EventClickArg) => {
     if (originalData && Array.isArray(originalData)) { 
@@ -170,6 +170,7 @@ const Calendar = () => {
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+
     const fetchData = async () => {
       try {
         const data = await getReservationListData(currentMonthStart, currentMonthEnd);
@@ -186,7 +187,7 @@ const Calendar = () => {
       <div className="flex flex-col bg-gray-900">      
         <div className="bg-gray-900 p-8">   
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-white mb-8">カレンダー</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">予約管理</h1>
             <CustomButton
               type="button"
               className="font-semibold !text-[40px]"
@@ -244,7 +245,8 @@ const Calendar = () => {
                             })} 
                           variant="outlined" 
                           className="w-full p-2 border border-gray-300 rounded"
-                        />   
+                        /> 
+                       
                         <TextField 
                           type="number"
                           label="部屋番号" 
@@ -330,4 +332,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default Reservation;

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import DashboardLayout from '@/app/layout/DashboardLayout';
-import { FaSearch, FaSort } from "react-icons/fa";
+import { FaArrowRight, FaSearch, FaSort } from "react-icons/fa";
 import CustomButton from '@shared/components/UI/CustomButton';
 import { useDashboard } from '@/hooks/useDashboard';
 import Modal from '@shared/components/UI/Modal';
@@ -12,9 +12,22 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Paper } from '@mui/material';
 import { ChangeEvent } from 'react';
-import MenuItem from '@mui/material/MenuItem';
+import { Timezone } from 'next-intl';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead, TableRow,
+  Paper,
+  TextField,
+  MenuItem,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 interface Employee {
   id: number;
@@ -27,6 +40,23 @@ interface Row {
   roomNum: number;
   workName: string;
 }
+interface Work {
+  id?: number;
+  work_name: string;
+  flat_name: string;
+  room_num: number;
+  start_time: Timezone;
+  end_time: Timezone;
+  checkbox_list: string;
+  hose_length: number;
+  hose_placement: string;
+  key_management: string;
+  notes: string;
+  required_tools: string;
+  team_size: number;
+  work_duration: number;
+}
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(40%)',
@@ -61,10 +91,23 @@ const currencies = [
   { "id": 20, "name": "非常照明器具の更新" },
   { "id": 21, "name": "配電盤の更新" }
 ];
-
-const DashboardPage = () => {
-  const { getFlatData,changeFlat,createFlat, deleteFlat} = useDashboard();
-  const [employees, setEmployees] = useState<{ id: number, name: string, address: string}[]>([]);
+const weekdayOptions = [
+  { key: "mon", label: "月" },
+  { key: "tue", label: "火" },
+  { key: "wed", label: "水" },
+  { key: "thu", label: "木" },
+  { key: "fri", label: "金" },
+  { key: "sat", label: "土" },
+  { key: "sun", label: "日" },
+];
+const buildingStructureOptions = [
+  { value: "横移動可", label: "横移動可" },
+  { value: "横移動不可", label: "横移動不可" },
+];
+const hourList = Array.from({ length: 24 }, (_, h) => h.toString().padStart(2, "0"));
+const FlatPage = () => {
+  const { getFlatData, changeFlat, createFlat, deleteFlat, getWorkDataByFlat, changeFlatDetailInfo, getFlatDetailInfoByflatId } = useDashboard();
+  const [employees, setEmployees] = useState<{ id: number, name: string, address: string }[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Add modal state
   const [modalContent, setModalContent] = useState<{ type: string, employee?: Employee }>(); // Optional: Store modal content
   const [name, setName] = useState('');
@@ -74,10 +117,43 @@ const DashboardPage = () => {
   const [sortDirection, setSortDirection] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [open, setOpen] = useState(false);
   const [uploadfile, setUploadfile] = useState<File | null>(null);
-  
+  const [works, setWorks] = useState<Work[]>([]);
+  const [parkingLocation, setParkingLocation] = useState('');
+  const [machineLocation, setMachineLocation] = useState('');
+  const [waterTapLocation, setWaterTapLocation] = useState('');
+  const [buildingStructure, setBuildingStructure] = useState('');
+  const [autoLockNumber, setAutoLockNumber] = useState('');
+  const [keyBoxLocation, setKeyBoxLocation] = useState('');
+  const [endTime, setEndTime] = useState<string>('00');
+  const [telNumber, setTelNumber] = useState<number | ''>('');
+  const [faxNumber, setFaxNumber] = useState<number | ''>('');
+
+  const handleNumberChange = (setter: (value: number | '') => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setter(value === '' ? '' : Number(value));
+  };
+  type ManagerDays = {
+    [key: string]: boolean;
+  };
+
+  const [managerDays, setManagerDays] = useState<ManagerDays>(() =>
+    weekdayOptions.reduce((acc, { key }) => {
+      acc[key] = false;
+      return acc;
+    }, {} as ManagerDays)
+  );
+  const [keyBoxExists, setKeyBoxExists] = useState(false);
+  const [startTime, setStartTime] = useState<string>('00');
+
   const [rows, setRows] = useState<Row[]>([{ id: 1, roomNum: 0, workName: '' }]);
+
+  // Filter end time options based on start time
+  const filteredEndTimeOptions = useMemo(() => {
+    if (!startTime) return hourList;
+    const startHour = parseInt(startTime);
+    return hourList.filter(hour => parseInt(hour) >= startHour);
+  }, [startTime]);
 
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
@@ -94,7 +170,7 @@ const DashboardPage = () => {
       }
     };
     fetchData();
-  }, []); 
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -132,7 +208,7 @@ const DashboardPage = () => {
 
   const openModal = (employee?: Employee, type: string = '') => {
     setModalContent({ type, employee });
-  
+
     if (employee) { // Ensures employee is neither undefined nor null
       setName(employee.name);
       setAddress(employee.address);
@@ -140,7 +216,7 @@ const DashboardPage = () => {
       setName('');
       setAddress('');
     }
-  
+
     setIsModalOpen(true);
   };
 
@@ -149,14 +225,59 @@ const DashboardPage = () => {
     setModalContent(undefined); // Reset modal content
   };
 
-  
-  
+  const viewWorkList = async (id: number) => {
+    const data = await getWorkDataByFlat(id);
+    setWorks(data);
+    setModalContent(prev => ({ ...prev, type: "viewWorkList" }));
+  };
+
+  const viewDetail = async (flatId: number) => {
+    setModalContent(prev => ({ ...prev, type: "viewDetail" }));
+    const data = await getFlatDetailInfoByflatId(flatId);
+    if (!data.flatDetailInfo) {
+      setParkingLocation('');
+      setMachineLocation('');
+      setWaterTapLocation('');
+      setBuildingStructure('');
+      setAutoLockNumber('');
+      setKeyBoxLocation('');
+      setKeyBoxExists(false);
+      setStartTime('00');
+      setEndTime('00');
+      setTelNumber('');
+      setFaxNumber('');
+      setManagerDays({});
+
+    } else {
+      const info = data.flatDetailInfo;
+      setParkingLocation(info.parking_location || '');
+      setMachineLocation(info.machine_location || '');
+      setWaterTapLocation(info.water_tap_location || '');
+      setBuildingStructure(info.building_structure || '');
+      setAutoLockNumber(info.auto_lock_number || '');
+      setKeyBoxLocation(info.key_box_location || '');
+      setKeyBoxExists(!!info.key_box_exists);
+      setStartTime(info.start_time || '00');
+      setEndTime(info.end_time || '00');
+      setTelNumber(info.tel_number || '');
+      setFaxNumber(info.fax_number || '');
+      try {
+        const parsedDays = typeof info.manager_work_days === 'string'
+          ? JSON.parse(info.manager_work_days)
+          : info.manager_work_days;
+        setManagerDays(parsedDays || {});
+      } catch (e) {
+        setManagerDays({});
+      }
+    }
+  };
+
   const handleSave = async () => {
     if (!modalContent?.employee) {
       notify('error', 'エラー!', 'データがありません!');
       return;
     }
-  
+
     const updatedFlatData = { id: modalContent.employee.id, name: name, address: address };
 
     try {
@@ -171,10 +292,42 @@ const DashboardPage = () => {
       console.log(error);
       notify('error', 'エラー!', '資料保管中にエラーが発生しました!');
     }
-  
+
     handleCloseModal();
   };
-  
+  const handleDetailInfoSave = async () => {
+    if (!modalContent?.employee) {
+      notify('error', 'エラー!', '対象の物件が見つかりません。');
+      return;
+    }
+
+    const detailData = {
+      flat_id: modalContent.employee.id,
+      parking_location: parkingLocation,
+      machine_location: machineLocation,
+      water_tap_location: waterTapLocation,
+      building_structure: buildingStructure,
+      auto_lock_number: autoLockNumber,
+      key_box_exists: keyBoxExists,
+      key_box_location: keyBoxLocation,
+      manager_work_days: JSON.stringify(managerDays),
+      start_time: startTime,
+      end_time: endTime,
+      tel_number: telNumber,
+      fax_number: faxNumber,
+    };
+
+    try {
+      await changeFlatDetailInfo(detailData);
+      notify('success', '成功!', '詳細情報を保存しました。');
+      handleCloseModal();
+    } catch (error) {
+      console.error(error);
+      notify('error', 'エラー!', '詳細情報の保存に失敗しました。');
+    }
+  };
+
+
   const handleCreate = async () => {
     const formData = new FormData();
     if (uploadfile) {
@@ -185,8 +338,8 @@ const DashboardPage = () => {
       });
       console.log(response);
     }
-    
-    const saveFlatData = { name: name, address: address, works:rows}
+
+    const saveFlatData = { name: name, address: address, works: rows }
     try {
       const createdFlat = await createFlat(saveFlatData);
       setEmployees(prevEmployees => [
@@ -194,8 +347,8 @@ const DashboardPage = () => {
         createdFlat        // Add the newly created flat to the array
       ]);
       notify('success', '成功!', 'データが成果的に保管されました!');
-    } catch (error) {     
-      console.log(error) 
+    } catch (error) {
+      console.log(error)
       notify('error', 'エラー!', '資料保管中にエラーが発生しました!');
     }
     handleCloseModal();
@@ -205,23 +358,23 @@ const DashboardPage = () => {
       notify('error', 'エラー!', 'データがありません!');
       return;
     }
-  
+
     const id = modalContent.employee.id; // Now safe to access
-  
+
     try {
       // Call deleteFlat to remove the data
       const deletedFlat = await deleteFlat(id);
-  
+
       setEmployees(prevEmployees =>
         prevEmployees.filter(employee => employee.id !== deletedFlat.flat.id)
       );
-  
+
       notify('success', '成功!', 'データが正常に削除されました!');
     } catch (error) {
       console.log(error);
       notify('error', 'エラー!', '資料削除中にエラーが発生しました!');
     }
-  
+
     handleCloseModal();
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
@@ -284,13 +437,13 @@ const DashboardPage = () => {
                     </th>
                   ))}
                   <th className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider">
-                  動作</th>
+                    動作</th>
                 </tr>
               </thead>
               <tbody>
                 {currentEmployees.map((employee, index) => (
                   <tr key={employee.id} className={`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} hover:bg-gray-700`}>
-                    <td className="px-6 py-3 whitespace-nowrap">{(currentPage-1)*itemsPerPage+index+1}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{employee.name}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{employee.address}</td>
                     <td className="px-6 py-3 whitespace-nowrap flex gap-3">
@@ -299,18 +452,18 @@ const DashboardPage = () => {
                     </td>
                   </tr>
                 ))}
-              </tbody>         
-            </table> 
+              </tbody>
+            </table>
             <div className="flex justify-center">
-              <Stack spacing={2} className='bg-gray-700 mt-1 rounded-[10px] py-1 px-5'>                    
-                <Pagination 
-                  color="primary" 
-                  count={Math.ceil(sortedEmployees.length / itemsPerPage)} 
-                  page={currentPage} 
-                  onChange={handlePageChange} 
-                /> 
+              <Stack spacing={2} className='bg-gray-700 mt-1 rounded-[10px] py-1 px-5'>
+                <Pagination
+                  color="primary"
+                  count={Math.ceil(sortedEmployees.length / itemsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                />
               </Stack>
-            </div>         
+            </div>
           </div>
         </div>
 
@@ -318,135 +471,148 @@ const DashboardPage = () => {
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
           {modalContent?.type === 'edit' && (
             <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
+              <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
                 <h2 className="text-xl font-bold mb-4">情報編集</h2>
                 <div className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="名前"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                    />
-                    <input
-                        type="text"
-                        placeholder="住所"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                    />
+                  <input
+                    type="text"
+                    placeholder="名前"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="住所"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
                 </div>
                 <div className="flex justify-end mt-4 space-x-2">
-                    <button
-                        onClick={handleSave}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                        保存
-                    </button>
-                    <button
-                        onClick={handleCloseModal}
-                        className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                    >
-                        取消
-                    </button>
+                  <button
+                    onClick={() => viewWorkList(modalContent?.employee?.id || 0)}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-800"
+                  >
+                    年間案件ー覧
+                  </button>
+                  <button
+                    onClick={() => viewDetail(modalContent?.employee?.id || 0)}
+                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-900"
+                  >
+                    詳細を見る
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-800"
+                  >
+                    保存
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-500"
+                  >
+                    取消
+                  </button>
                 </div>
+
+              </div>
             </div>
-           </div>
           )}
           {modalContent?.type === 'create' && (
             <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
               <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
-                  <h2 className="text-xl font-bold mb-4">新規物件</h2>
-                  <div className="space-y-4">
-                      <input
-                          type="text"
-                          placeholder="名前"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded"
-                      />
-                      <input
-                          type="text"
-                          placeholder="住所"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded"
-                      />
-                       <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        // onClick={handleUpload}
-                        startIcon={<CloudUploadIcon />}
-                      >
-                        アップロード
-                        <VisuallyHiddenInput
-                          type="file"
-                          accept="*.*"
-                          onChange={(event) => handleFileChange(event)}
-                          multiple
-                        />
-                      </Button>
-                      <div style={{display: 'flex', flexDirection: 'column', maxWidth: '600px',}}>
-                        <TableContainer component={Paper}>
-                          <Table>
-                            <TableHead>
-                              <TableRow >
-                                <TableCell className='text-[20px]'>部屋番号</TableCell>
-                                <TableCell className='text-[20px]'>案件名</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {rows.map((row, index) => (
-                                <TableRow key={row.id}>                                  
-                                  <TableCell>
-                                    <TextField
-                                      type='number'
-                                      minRows = {0}
-                                      value={row.roomNum}
-                                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e, index, 'roomNum')}
-                                      className='w-20'                          
-                                    />
-                                  </TableCell>
-                                  <TableCell>
-                                    <TextField
-                                      select
-                                      value={row.workName}  
-                                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e, index, 'workName')}
-                                      className="w-full p-2 border border-gray-300 rounded"
-                                    >
-                                      {currencies.map((option, index) => (
-                                        <MenuItem key={`${option.name}-${index}`} value={option.name}>
-                                          {option.name}
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
-                                  </TableCell>                                  
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                        <Button onClick={handleAddRow}　className='font-bold text-[20px]' variant="contained" style={{ marginTop: '20px' }}>
-                         案件追加
-                        </Button>
-                      </div>
+                <h2 className="text-xl font-bold mb-4">新規物件</h2>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="名前"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                  <input
+                    type="text"
+                    placeholder="住所"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                  />
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    // onClick={handleUpload}
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    アップロード
+                    <VisuallyHiddenInput
+                      type="file"
+                      accept="*.*"
+                      onChange={(event) => handleFileChange(event)}
+                      multiple
+                    />
+                  </Button>
+                  <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px', }}>
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow >
+                            <TableCell className='text-[20px]'>部屋番号</TableCell>
+                            <TableCell className='text-[20px]'>案件名</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rows.map((row, index) => (
+                            <TableRow key={row.id}>
+                              <TableCell>
+                                <TextField
+                                  type='number'
+                                  minRows={0}
+                                  value={row.roomNum}
+                                  onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e, index, 'roomNum')}
+                                  className='w-20'
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <TextField
+                                  select
+                                  value={row.workName}
+                                  onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(e, index, 'workName')}
+                                  className="w-full p-2 border border-gray-300 rounded"
+                                >
+                                  {currencies.map((option, index) => (
+                                    <MenuItem key={`${option.name}-${index}`} value={option.name}>
+                                      {option.name}
+                                    </MenuItem>
+                                  ))}
+                                </TextField>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <Button onClick={handleAddRow} className='font-bold text-[20px]' variant="contained" style={{ marginTop: '20px' }}>
+                      案件追加
+                    </Button>
                   </div>
-                  <div className="flex justify-end mt-4 space-x-2">
-                      <button
-                          onClick={handleCreate}
-                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                      >
-                          保存
-                      </button>
-                      <button
-                          onClick={handleCloseModal}
-                          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                      >
-                          取消
-                      </button>
-                  </div>
+                </div>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button
+                    onClick={handleCreate}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    保存
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+                  >
+                    取消
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -473,6 +639,217 @@ const DashboardPage = () => {
               </div>
             </div>
           )}
+          {modalContent?.type === 'viewWorkList' && (
+            <div className="flex items-center justify-center inset-0 bg-black bg-opacity-30 min-h-screen fixed top-0 left-0 right-0 z-50">
+              <div className="w-full max-w-5xl bg-white rounded-[10px] shadow-lg overflow-x-auto p-2">
+                <table className="w-full bg-white text-gray-900 rounded-lg border border-gray-200">
+                  <thead>
+                    <tr className="bg-gray-300">
+                      {["番号", "案件名", "部屋番号", "開始時間", "終了時間"].map((column) => (
+                        <th
+                          key={column}
+                          className="px-6 py-3 text-left text-[15px] font-semibold tracking-wider cursor-pointer"
+                          onClick={() => handleSort(column)}
+                        >
+                          <div className="flex items-center">
+                            {column}
+                            {sortColumn === column && (
+                              <FaSort className={`ml-1 ${sortDirection === "asc" ? "text-gray-500" : "text-gray-700"}`} />
+                            )}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {works.map((work, index) => (
+                      <tr
+                        key={work.id}
+                        className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          } hover:bg-gray-100 transition-colors`}
+                      >
+                        <td className="px-6 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                        <td className="px-6 py-3 whitespace-nowrap">{work.work_name}</td>
+                        <td className="px-6 py-3 whitespace-nowrap">{work.room_num}</td>
+                        <td className="px-6 py-3 whitespace-nowrap">
+                          {work.start_time ? new Date(work.start_time).toISOString().split('T')[0] : 'N/A'}
+                        </td>
+                        <td className="px-6 py-3 whitespace-nowrap">
+                          {work.end_time ? new Date(work.end_time).toISOString().split('T')[0] : 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-500"
+                  >
+                    渡る
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          )}
+          {modalContent?.type === 'viewDetail' && (
+            <div className="flex items-center justify-center inset-0 bg-black bg-opacity-30 min-h-screen fixed top-0 left-0 right-0 z-50">
+              <div className="w-full max-w-3xl bg-white rounded-[10px] shadow-lg overflow-x-auto p-4">
+                <h2 className="text-xl font-bold mb-5 mt-5">{modalContent.employee?.name}の物件詳細</h2>
+                <div className="space-y-4">
+                  <TextField
+                    label="作業車両の停車位置"
+                    variant="outlined"
+                    className="w-full border border-gray-300 rounded"
+                    value={parkingLocation}
+                    onChange={(e) => setParkingLocation(e.target.value)}
+                  />
+                  <TextField
+                    label="高圧洗浄機の設置位置"
+                    variant="outlined"
+                    className="w-full border border-gray-300 rounded"
+                    value={machineLocation}
+                    onChange={(e) => setMachineLocation(e.target.value)}
+                  />
+                  <TextField
+                    label="散水栓の場所"
+                    variant="outlined"
+                    className="w-full border border-gray-300 rounded"
+                    value={waterTapLocation}
+                    onChange={(e) => setWaterTapLocation(e.target.value)}
+                  />
+                  <TextField
+                    select
+                    label="建物構造"
+                    className="w-full border border-gray-300 rounded"
+                    value={buildingStructure}
+                    SelectProps={{
+                      MenuProps: {
+                        disableScrollLock: true,
+                      },
+                    }}
+                    onChange={(e) => setBuildingStructure(e.target.value)}
+                  >
+                    {buildingStructureOptions.map(({ value, label }) => (
+                      <MenuItem key={value} value={value}>{label}</MenuItem>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    label="オートロック番号"
+                    type="number"
+                    variant="outlined"
+                    className="w-full border border-gray-300 rounded"
+                    value={autoLockNumber}
+                    onChange={(e) => setAutoLockNumber(e.target.value)}
+                  />
+
+                  <FormControlLabel
+                    control={<Checkbox checked={keyBoxExists} onChange={(e) => setKeyBoxExists(e.target.checked)} />}
+                    label="キーBOXの有無"
+                  />
+                  {keyBoxExists && (
+                    <TextField
+                      label="キーBOXの設置場所"
+                      variant="outlined"
+                      className="w-full border border-gray-300 rounded"
+                      value={keyBoxLocation}
+                      onChange={(e) => setKeyBoxLocation(e.target.value)}
+                    />
+                  )}
+                  <FormGroup row>
+                    {weekdayOptions.map(({ key, label }) => (
+                      <FormControlLabel
+                        key={key}
+                        control={
+                          <Checkbox
+                            checked={!!managerDays[key]} // Ensures a boolean value
+                            onChange={(e) =>
+                              setManagerDays((prev) => ({
+                                ...prev,
+                                [key]: e.target.checked,
+                              }))
+                            }
+                          />
+                        }
+                        label={label}
+                      />
+                    ))}
+                  </FormGroup>
+                  <div className='flex gap-2'>
+                    <TextField
+                      select
+                      label="出勤時間（開始）"
+                      className="w-1/2 border border-gray-300 rounded"
+                      value={startTime}
+                      SelectProps={{
+                        MenuProps: {
+                          disableScrollLock: true,
+                        },
+                      }}
+                      onChange={(e) => setStartTime(e.target.value)}
+                    >
+                      {hourList.map((h) => (
+                        <MenuItem key={h} value={h}>{`${h}:00`}</MenuItem>
+                      ))}
+                    </TextField>
+                    <TextField
+                      select
+                      label="出勤時間（終了）"
+                      className="w-1/2 border border-gray-300 rounded"
+                      value={endTime}
+                      SelectProps={{
+                        MenuProps: {
+                          disableScrollLock: true,
+                        },
+                      }}
+                      onChange={(e) => setEndTime(e.target.value)}
+                    >
+                      {filteredEndTimeOptions.map((h: string) => (
+                        <MenuItem key={h} value={h}>{`${h}:00`}</MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+
+                  <div className='flex gap-2'>
+                    <TextField
+                      label="現地電話番号"
+                      type="number"
+                      variant="outlined"
+                      className="w-full border border-gray-300 rounded"
+                      value={telNumber}
+                      onChange={handleNumberChange(setTelNumber)}
+                    />
+                    <TextField
+                      label="FAX番号"
+                      type="number"
+                      variant="outlined"
+                      className="w-full border border-gray-300 rounded"
+                      value={faxNumber}
+                      onChange={handleNumberChange(setFaxNumber)}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button
+                    onClick={handleDetailInfoSave}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    保存
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+                  >
+                    取消
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          )}
+
 
         </Modal>
       </div>
@@ -480,4 +857,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default FlatPage;

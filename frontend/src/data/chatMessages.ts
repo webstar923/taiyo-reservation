@@ -16,7 +16,7 @@ export interface ChatMessage {
 export const chatMessages: { [key: string]: ChatMessage } = {
   welcome: {
     type: 'button',    
-    content: 'こんにちは!🙂<br/>私たちのサイトにお越しいただきありがとうございます。<br/>私は、Full Value社の予約管理エージェント、エミーです。<br/>予約の変更方法、その手続きについてご案内できます。<br/>どのようなお手伝いが必要でしょうか？',
+    content: 'はじめまして!🙂<br/>私たちのサイトにお越しいただきありがとうございます。<br/>私は、Taiyo 会社の予約管理エージェント、エミーです。<br/>予約の変更方法、その手続きについてご案内できます。<br/>どのようなお手伝いが必要でしょうか？',
     
     options: ['予約変更', '予約照会'],
     reqType: ['return']
@@ -35,17 +35,17 @@ export const chatMessages: { [key: string]: ChatMessage } = {
   },
   新しい予約: {
     type: 'input',
-    content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにメンション名を入力し、エンターガンを押してください。（メンション名のみを入力してください。）',
+    content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにマンション名を入力し、エンターガンを押してください。（マンション名のみを入力してください。）',
     reqType: ['findFlat']
   },
   予約照会: {
     type: 'input',
-    content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにメンション名を入力し、エンターガンを押してください。（メンション名のみを入力してください。）',
+    content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにマンション名を入力し、エンターガンを押してください。（マンション名のみを入力してください。）',
     reqType: ['findFlat']
   },
   予約変更: {
       type: 'input',
-      content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにメンション名を入力し、エンターガンを押してください。（メンション名のみを入力してください。）',
+      content: 'マンション名を⼊⼒してください!<br>下の入力ウィンドウにマンション名を入力し、エンターガンを押してください。（マンション名のみを入力してください。）',
       reqType: ['findFlat']
   },
   inputFlatError: {
@@ -55,7 +55,7 @@ export const chatMessages: { [key: string]: ChatMessage } = {
   },
   selectFlatError: {
     type: 'input',
-    content: '望むメンション名がない場合は再入力してください。',
+    content: '望むマンション名がない場合は再入力してください。',
     reqType: ['findFlat']
   },
   inputFlatSucess: {
@@ -113,7 +113,7 @@ export const chatMessages: { [key: string]: ChatMessage } = {
   selectDivision:{
     type: 'select',
     content: '予約可能区分は下記です。',
-    options:["午前","午後","どちらでも"],
+    options:["午前","午後"],
     name:"division",
     column:["s"],
     reqType: ['reservate']
@@ -148,7 +148,7 @@ export const chatMessages: { [key: string]: ChatMessage } = {
   changeableReservation:{
     type: 'reservationView',    
     content: '現在予約中のメニューは下記です。<br> 予約を変更しますか？',        
-    reqType: ['変更する','変更しない']
+    reqType: ['変更する','変更しない','キャンセル（作業なし）']
   },
   changeReservation:{
     type: 'reservationView',    
@@ -157,7 +157,7 @@ export const chatMessages: { [key: string]: ChatMessage } = {
   },
   ReservationChangeSucess:{
     type: 'reservationView',    
-    content: 'ご予約の変更が完了しました>',        
+    content: 'ご予約の変更が完了しました.',        
     reqType: ['次へ','終了']
   },
   viewReservationList:{

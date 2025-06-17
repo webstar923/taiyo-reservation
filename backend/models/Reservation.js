@@ -21,7 +21,13 @@ const Reservation = sequelize.define('Reservation', {
     type:DataTypes.STRING,
     allowNull: false,
     defaultValue:"morning"
-  },},
+  },
+  status:{
+    type:DataTypes.STRING,
+    allowNull: false,
+    defaultValue:"pending"
+  }
+},
   { 
     timestamps: false,
   });;

@@ -110,6 +110,14 @@ const Chat = () => {
                   className="top-[50px] w-[65vw] text-[20px] bg-[#dfe1ee]  border-none rounded-[5px] px-[10px] py-[5px] border-[0px] sm:w-[30vw] focus:outline-none focus:border-none" 
                   placeholder="ここに入力してください..."
                 />
+　                  {index + 1 === messages.length && messages.length !== 1 &&
+                  <div
+                    className={`border border-[#f88888] px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4141] text-[#ff3333] hover:bg-[#ffeaea] cursor-pointer bg-[#FFFFFF]`}
+                    onClick={() => handleBackClick()}
+                  >
+                    <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
+                  </div>
+                }
               </div>
             )}
             {message.type === 'select' && (
@@ -148,7 +156,12 @@ const Chat = () => {
                   })}
                 <div className="flex gap-6">  
                   <Button label='次へ' onClickHandler={()=>handleSelectClick(selectedValue,message.reqType[0])}/>
-                  <Button label='戻る' onClickHandler={()=>handleBackClick()}/>
+                  <div
+                    className={`border border-[#f88888] px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4141] text-[#ff3333] hover:bg-[#ffeaea] cursor-pointer bg-[#FFFFFF]`}
+                    onClick={() => handleBackClick()}
+                  >
+                    <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
+                  </div>
                 </div>  
               </div>
             )}
@@ -173,11 +186,11 @@ const Chat = () => {
                           className="select-none rounded-4"
                           src="/assets/images/tree.png"
                           alt="tree"
-                          width={100}
-                          height={100}
+                          width={250}
+                          height={250}
                         />
                       </div>
-                      <p className="font-semibold text-[32px] leading-[40px] tracking-[-0.05em] text-[#091428]">Full Value</p>
+                      {/* <p className="font-semibold text-[32px] leading-[40px] tracking-[-0.05em] text-[#091428]">Full Value</p> */}
                     </div>
                     <div className="flex flex-col gap-2 my-[9px]">
                       <p className="font-normal text-5 leading-[19px] text-[#091428]">{message.options.flat_name}</p>
@@ -197,6 +210,7 @@ const Chat = () => {
                 <div className="flex gap-6">  
                   <Button label={message.reqType[0]} onClickHandler={()=>handleButtonClick(message.reqType[0],message.options.id)}/>
                   <Button label={message.reqType[1]} onClickHandler={()=>handleButtonClick(message.reqType[1],message.options.id)}/>
+                  {/* <Button label={message.reqType[2]} onClickHandler={()=>handleButtonClick(message.reqType[2],message.options.id)}/> */}
                 </div>  
               </div>
             )}

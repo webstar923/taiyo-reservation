@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./index');
-const bcrypt = require('bcryptjs');
 
 const Flat = sequelize.define('Flat', {
   name: {
@@ -12,9 +11,10 @@ const Flat = sequelize.define('Flat', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-  },},
-  { 
-    timestamps: false,
-  });;
+  },
+}, {
+  timestamps: false,
+  tableName: 'Flats',
+});
 
 module.exports = Flat;

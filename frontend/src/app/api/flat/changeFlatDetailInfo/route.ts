@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { fetchWithAuth } from '@/utils/fetchUtils';
 
-export async function GET() {
-  try {  
-    
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';   
-    const res = await fetchWithAuth(`${API_BASE_URL}/log/getNotificationNum`, {
-      method: 'GET',
+export async function POST(req: Request) {
+  try {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
+    const requestBody = await req.json();
+    const res = await fetchWithAuth(`${API_BASE_URL}/flat/changeFlatDetailInfo`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify(requestBody),
     });
+
     // Get the raw response body to inspect it
     const responseText = await res.text();
     const data = responseText ? JSON.parse(responseText) : {};      

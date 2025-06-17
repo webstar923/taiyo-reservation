@@ -14,27 +14,14 @@ export async function POST(req: Request) {
       body: JSON.stringify(requestBody),     
     });
 
-    // Check if the response is JSON
-    if (response.ok) {
-      // Check if the response is of type JSON
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        return NextResponse.json(data, { status: 201 });
-      } else {
-        // If not JSON, log the raw response
-        const rawResponse = await response.text();
-        console.error("Expected JSON but got:", rawResponse);
-        return NextResponse.json({ message: "Unexpected response format" }, { status: 500 });
-      }
-    } else {
-      // Handle HTTP errors
-      console.error(`Error fetching data from API: ${response.status} ${response.statusText}`);
-      return NextResponse.json({status:true, message: `API call failed: ${response.status}` }, { status: 500 });
-    }
-  } catch (error) {
-    console.error('Error during registration:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  }
+     // Get the raw response body to inspect it
+     const responseText = await response.text();
+     const data = responseText ? JSON.parse(responseText) : {};      
+     return NextResponse.json(data, { status: 201 });
+   } catch (error) {
+     console.error('Error during registration:', error);
+     // Return a generic error response for unexpected errors
+     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+   }
 }
 

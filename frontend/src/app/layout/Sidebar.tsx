@@ -86,12 +86,12 @@ const Sidebar = () => {
           </li>
           <li
             className={`${
-              pathname.startsWith('/dashboard/calendar') ? 'bg-[#ff8892] text-white' : ''
+              pathname.startsWith('/dashboard/reservation') ? 'bg-[#ff8892] text-white' : ''
             } rounded-lg p-3 hover:bg-[#ff8892] text-white transition-all duration-100`}
           >
-            <Link href="/dashboard/calendar" className="flex items-center">
-              <CalendarIcon className={`w-[18px] h-[18px] ${pathname.startsWith('/dashboard/calendar') && "text-[#FFFFFF]"}`} />
-              {(isSidebarOpen || isMobile) && <span className={`ml-2 ${pathname.startsWith('/dashboard/calendar') && "text-[#FFFFFF]"}`}>カレンダー</span>}
+            <Link href="/dashboard/reservation" className="flex items-center">
+              <CalendarIcon className={`w-[18px] h-[18px] ${pathname.startsWith('/dashboard/reservation') && "text-[#FFFFFF]"}`} />
+              {(isSidebarOpen || isMobile) && <span className={`ml-2 ${pathname.startsWith('/dashboard/reservation') && "text-[#FFFFFF]"}`}>予約管理</span>}
             </Link>
           </li>
           <li

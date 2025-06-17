@@ -59,6 +59,31 @@ const findReservation = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const cancelReservation = async (req, res) => {
+  try {
+    const { reservation_id } = req.body;
+
+    if (!reservation_id) {
+      return res.status(400).json({ message: 'reservation_id is required' });
+    }
+
+    // Find the reservation by ID
+    const reservation = await Reservation.findByPk(reservation_id);
+
+    if (!reservation) {
+      return res.status(404).json({ message: 'Reservation not found' });
+    }
+
+    // Update the status to "cancelled"
+    reservation.status = 'cancelled';
+    await reservation.save();
+
+    return res.status(200).json({ message: 'Reservation cancelled successfully', reservation });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 const findReservationByRoomNum = async (req, res) => {
   try {
     const { flat_name,room_num,work_name} = req.body; // Extract name from the request body   
@@ -76,6 +101,9 @@ const findReservationByRoomNum = async (req, res) => {
         work_name: work_name,
         reservation_time: {
           [Op.gte]: Sequelize.fn('NOW')  // Corrected: Use 'NOW()' instead of 'CURRENT'
+        },
+        status: {
+          [Op.eq]: 'pending'
         }
       }
     });
@@ -417,4 +445,4 @@ module.exports = {
   findFlat, findWork, findReservation, findChangeDate, 
   updatReservation,  getChangeableDate, createReservation,
    getReservations,getReservationListData,deleteReservation, 
-   getDashboardData,findReservationByRoomNum};
+   getDashboardData,findReservationByRoomNum,cancelReservation};
