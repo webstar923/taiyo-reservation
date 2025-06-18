@@ -9,8 +9,8 @@ import Stack from '@mui/material/Stack';
 import CheckIcon from '@public/assets/icons/check_circle_icon.svg';
 
 const Change_Log = () => {
-  const {getChangeLogData} = useDashboard();
-  const [changeLogs, setChangeLogs] = useState<{ id: number, timestamp: string, message:string}[]>([]);
+  const { getChangeLogData } = useDashboard();
+  const [changeLogs, setChangeLogs] = useState<{ id: number, timestamp: string, message: string }[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState("asc");
@@ -21,18 +21,24 @@ const Change_Log = () => {
   };
 
   useEffect(() => {
-    
+
     const fetchData = async () => {
       try {
         const data = await getChangeLogData();
-        setChangeLogs(data);
+        if (Array.isArray(data)) {
+          setChangeLogs(data);
+        } else {
+          console.error("Expected array from getChangeLogData(), got:", data);
+          setChangeLogs([]); // Fallback to empty array
+        }
       } catch (error) {
         console.error("Error fetching data", error);
+        setChangeLogs([]);
       }
     };
     fetchData();
   }, []);
-  const handleSearch = (e:React.ChangeEvent<HTMLInputElement> ) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
@@ -45,11 +51,13 @@ const Change_Log = () => {
     }
   };
 
-  const filterChangeLog = changeLogs.filter((logs) =>
-    Object.values(logs).some(
-      (value) => value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  const filterChangeLog = Array.isArray(changeLogs)
+    ? changeLogs.filter((logs) =>
+      Object.values(logs).some(
+        (value) => value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
     )
-  );
+    : [];
 
   const sortedChangeLogs = [...filterChangeLog].sort((a, b) => {
     if (sortColumn) {
@@ -62,7 +70,7 @@ const Change_Log = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentChangeLogs = sortedChangeLogs.slice(indexOfFirstItem, indexOfLastItem);
-  
+
   return (
     <DashboardLayout>
       <div className="flex flex-col bg-gray-900">
@@ -86,7 +94,7 @@ const Change_Log = () => {
             <table className="w-full bg-gray-800 text-white rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-gray-700">
-                  {["番号", "状態","時間", "メッセージ"].map((column) => (
+                  {["番号", "状態", "時間", "メッセージ"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"
@@ -105,24 +113,24 @@ const Change_Log = () => {
               <tbody>
                 {currentChangeLogs.map((logs, index) => (
                   <tr key={logs.id} className={`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} hover:bg-gray-700`}>
-                    <td className="px-6 py-3 whitespace-nowrap">{(currentPage-1)*itemsPerPage+index+1}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                     <td className="px-6 py-3 whitespace-nowrap"><CheckIcon /></td>
-                    <td className="px-6 py-3 whitespace-nowrap">{new Date(logs.timestamp).toISOString().replace("T", " ").replace(".000Z", "") }</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{new Date(logs.timestamp).toISOString().replace("T", " ").replace(".000Z", "")}</td>
                     <td className="px-6 py-3 w-[75%] whitespace-wrap">{logs.message}</td>
                   </tr>
                 ))}
-              </tbody>         
-            </table> 
+              </tbody>
+            </table>
             <div className="flex justify-center">
-              <Stack spacing={2} className='bg-gray-700 mt-1 rounded-[10px] py-1 px-5'>                    
-                <Pagination 
-                  color="primary" 
-                  count={Math.ceil(sortedChangeLogs.length / itemsPerPage)} 
-                  page={currentPage} 
-                  onChange={handlePageChange} 
-                /> 
+              <Stack spacing={2} className='bg-gray-700 mt-1 rounded-[10px] py-1 px-5'>
+                <Pagination
+                  color="primary"
+                  count={Math.ceil(sortedChangeLogs.length / itemsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                />
               </Stack>
-            </div>         
+            </div>
           </div>
         </div>
       </div>
