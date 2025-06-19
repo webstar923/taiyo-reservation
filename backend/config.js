@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
-const DB_NAME = process.env.DB_NAME || "weing_db";
+const DB_NAME = process.env.DB_NAME || "taiyo_db";
 const DB_USER = process.env.DB_USER || "root";
 const DB_PASS = process.env.DB_PASS || "";
 
