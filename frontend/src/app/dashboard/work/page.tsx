@@ -190,16 +190,29 @@ const DashboardPage = () => {
   };
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const worksData = await getWorkData();
-        const flatsData = await getFlatData();      
-        setWorks(worksData);
-        setFlats(flatsData);
-
+        const flatsData = await getFlatData();
+  
+        if (Array.isArray(worksData)) {
+          setWorks(worksData);
+        } else {
+          console.error("Expected worksData to be array:", worksData);
+          setWorks([]); // fallback
+        }
+  
+        if (Array.isArray(flatsData)) {
+          setFlats(flatsData);
+        } else {
+          console.error("Expected flatsData to be array:", flatsData);
+          setFlats([]); // fallback
+        }
+  
       } catch (error) {
         console.error("Error fetching data", error);
+        setWorks([]); // fallback to prevent crash
+        setFlats([]);
       }
     };
     fetchData();
@@ -217,31 +230,29 @@ const DashboardPage = () => {
     }
   };
 
-  const filteredWorks = works.filter((work) => {
-    return [
-      work.work_name,
-      work.flat_name,
-      work.room_num?.toString(),
-      work.start_time?.toString(),
-      work.end_time?.toString(),
-      // Add more fields if needed
-    ].some((field) =>
-      field?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  const filteredWorks = Array.isArray(works)
+  ? works.filter((work) => {
+      return [
+        work.work_name,
+        work.flat_name,
+        work.room_num?.toString(),
+        work.start_time?.toString(),
+        work.end_time?.toString(),
+      ].some((field) =>
+        field?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    })
+  : [];
   const sortedWorks = [...filteredWorks].sort((a, b) => {
     if (sortColumn) {
       const column = sortColumn as keyof Work;
-
-      // Check if both a[column] and b[column] are defined
       if (a[column] !== undefined && b[column] !== undefined) {
-        if (a[column] < b[column]) return sortDirection === "asc" ? -1 : 1;
-        if (a[column] > b[column]) return sortDirection === "asc" ? 1 : -1;
+        if (a[column]! < b[column]!) return sortDirection === "asc" ? -1 : 1;
+        if (a[column]! > b[column]!) return sortDirection === "asc" ? 1 : -1;
       }
     }
     return 0;
   });
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentWorks = sortedWorks.slice(indexOfFirstItem, indexOfLastItem);
