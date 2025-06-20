@@ -7,7 +7,7 @@ export async function GET() {
    
     const res = await fetchWithAuth(`${API_BASE_URL}/work/getAllData`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json'},
+      headers:  { 'Content-Type': 'application/json'},
     });
     // Get the raw response body to inspect it
     const responseText = await res.text();
