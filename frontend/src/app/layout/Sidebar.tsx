@@ -156,6 +156,16 @@ const Sidebar = () => {
               {(isSidebarOpen || isMobile) && <span className={`ml-2 ${pathname.startsWith('/dashboard/file') && "text-[#FFFFFF]"}`}>ファイル</span>}
             </Link>
           </li>
+          <li
+            className={`${
+              pathname.startsWith('/dashboard/user') ? 'bg-[#ff8892] text-white' : ''
+            } rounded-lg p-3 hover:bg-[#ff8892] text-white transition-all duration-100`}
+          >
+            <Link href="/dashboard/user" className="flex items-center">
+              <FileIcon className={`w-[18px] h-[18px] ${pathname.startsWith('/dashboard/user') && "text-[#FFFFFF]"}`} />
+              {(isSidebarOpen || isMobile) && <span className={`ml-2 ${pathname.startsWith('/dashboard/user') && "text-[#FFFFFF]"}`}>user</span>}
+            </Link>
+          </li>
           <li className="rounded-lg p-3 hover:bg-[#ff8892] text-white transition-all duration-100" onClick={handleLogout}>
             <Link href=""  className="flex items-center">
               <LogoutIcon className={`w-[18px] "text-[#F3A0FF]" h-[18px] `} />
