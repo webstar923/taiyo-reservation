@@ -34,11 +34,11 @@ const Work = sequelize.define('work', {
     allowNull: true,
   },
   team_size: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(250),
     allowNull: true,
   },
   work_duration: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(250),
     allowNull: true,
   },
   key_management: {

@@ -48,7 +48,7 @@ const FlatDetailInfo = sequelize.define('FlatDetailInfo', {
     allowNull: true,
   },
   fax_number: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(250),
     allowNull: true,
   },
   flat_id: {

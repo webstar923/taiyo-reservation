@@ -151,14 +151,14 @@ const FlatPage = () => {
   const [autoLockNumber, setAutoLockNumber] = useState("");
   const [keyBoxLocation, setKeyBoxLocation] = useState("");
   const [endTime, setEndTime] = useState<string>("00");
-  const [telNumber, setTelNumber] = useState<number | "">("");
-  const [faxNumber, setFaxNumber] = useState<number | "">("");
+  const [telNumber, setTelNumber] = useState("");
+  const [faxNumber, setFaxNumber] = useState("");
 
   const handleNumberChange =
-    (setter: (value: number | "") => void) =>
+    (setter: (value: string | "") => void) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      setter(value === "" ? "" : Number(value));
+      
     };
   type ManagerDays = {
     [key: string]: boolean;
@@ -804,7 +804,7 @@ const FlatPage = () => {
                 <table className="w-full bg-white text-gray-900 rounded-lg border border-gray-200">
                   <thead>
                     <tr className="bg-gray-300">
-                      {["番号", "案件名", "部屋番号", "開始時間", "終了時間"]
+                      {["番号", "案件名", "部屋番号", "開始期間", "終了期間"]
                         .map((column) => (
                           <th
                             key={column}
@@ -966,7 +966,7 @@ const FlatPage = () => {
                   <div className="flex gap-2">
                     <TextField
                       select
-                      label="出勤時間（開始）"
+                      label="開始期間"
                       className="w-1/2 border border-gray-300 rounded"
                       value={startTime}
                       SelectProps={{
@@ -982,7 +982,7 @@ const FlatPage = () => {
                     </TextField>
                     <TextField
                       select
-                      label="出勤時間（終了）"
+                      label="終了期間"
                       className="w-1/2 border border-gray-300 rounded"
                       value={endTime}
                       SelectProps={{
@@ -1005,31 +1005,36 @@ const FlatPage = () => {
                       variant="outlined"
                       className="w-full border border-gray-300 rounded"
                       value={telNumber}
-                      onChange={handleNumberChange(setTelNumber)}
+                      onChange={(e) => setTelNumber(e.target.value)}
                     />
                     <TextField
                       label="FAX番号"
-                      type="number"
+                      type="text" 
                       variant="outlined"
                       className="w-full border border-gray-300 rounded"
                       value={faxNumber}
-                      onChange={handleNumberChange(setFaxNumber)}
+                      onChange={(e) => setFaxNumber(e.target.value)}
                     />
                   </div>
                 </div>
-                <div className="flex justify-end mt-4 space-x-2">
-                  <button
-                    onClick={handleDetailInfoSave}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    保存
-                  </button>
-                  <button
-                    onClick={handleCloseModal}
-                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                  >
-                    取消
-                  </button>
+                <div className="flex justify-between mt-4 space-x-2">
+                  <div>
+                    <input type="file" name="" id="" />
+                  </div>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={handleDetailInfoSave}
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                      保存
+                    </button>
+                    <button
+                      onClick={handleCloseModal}
+                      className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+                    >
+                      取消
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

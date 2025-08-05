@@ -43,8 +43,8 @@ interface Work {
   key_management: string;
   notes: string;
   required_tools: string;
-  team_size: number;
-  work_duration: number;
+  team_size: string;
+  work_duration: string;
 }
 
 interface Flat {
@@ -150,8 +150,8 @@ const DashboardPage = () => {
   const [hosePlacement, setHosePlacement] = useState<string>("");
   const [hoseLength, setHoseLength] = useState<number | "">("");
   const [requiredTools, setRequiredTools] = useState<string>("");
-  const [teamSize, setTeamSize] = useState<number | "">("");
-  const [workDuration, setWorkDuration] = useState<number | "">("");
+  const [teamSize, setTeamSize] = useState('');
+  const [workDuration, setWorkDuration] = useState('');
   const [keyManagement, setKeyManagement] = useState<"事前用意" | "弊社管理">("事前用意");
   const [notes, setNotes] = useState<string>("");
 
@@ -268,8 +268,8 @@ const DashboardPage = () => {
       setHosePlacement(works.hose_placement);
       setHoseLength(works.hose_length);
       setRequiredTools(works.required_tools);
-      setTeamSize(works.team_size);
-      setWorkDuration(works.work_duration);
+      setTeamSize(works.team_size?.toString());
+      setWorkDuration(works.work_duration?.toString());
       setKeyManagement(works.key_management as "事前用意" | "弊社管理");
       setNotes(works.notes);
       setCheckboxList(parseCheckboxList(works.checkbox_list) as CheckboxList);
@@ -284,8 +284,8 @@ const DashboardPage = () => {
       setHosePlacement('');
       setHoseLength(0);
       setRequiredTools('');
-      setTeamSize(0);
-      setWorkDuration(0);
+      setTeamSize('');
+      setWorkDuration('');
       setKeyManagement("事前用意"); 
       setNotes('');
       setCheckboxList({
@@ -345,8 +345,6 @@ const DashboardPage = () => {
             ? { 
                 ...updatedWorkData, 
                 hose_length: typeof updatedWorkData.hose_length === 'string' ? Number(updatedWorkData.hose_length) : updatedWorkData.hose_length,
-                team_size: typeof updatedWorkData.team_size === 'string' ? Number(updatedWorkData.team_size) : updatedWorkData.team_size,
-                work_duration: typeof updatedWorkData.work_duration === 'string' ? Number(updatedWorkData.work_duration) : updatedWorkData.work_duration
               }
             : works
         );
@@ -449,7 +447,7 @@ const DashboardPage = () => {
             <table className="w-full bg-gray-800 text-white rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-gray-700">
-                  {["番号", "案件名", "物件名", "部屋番号", "開始時間", "終了時間"].map((column) => (
+                  {["番号", "案件名", "物件名", "部屋番号", "開始期間", "終了期間"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"
@@ -572,7 +570,7 @@ const DashboardPage = () => {
                   <div className='w-full flex gap-3'>
                     <TextField
                       type="date"
-                      label="開始時間"
+                      label="開始期間"
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
                       variant="outlined"
@@ -580,7 +578,7 @@ const DashboardPage = () => {
                     />
                     <TextField
                       type="date"
-                      label="終了時間"
+                      label="終了期間"
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
                       variant="outlined"
@@ -598,17 +596,17 @@ const DashboardPage = () => {
                     />
                     <TextField
                       label="班数（〇人）"
-                      type="number"
+                      type="text"
                       value={teamSize?teamSize:0}
-                      onChange={(e) => setTeamSize(Number(e.target.value) || 0)}
+                      onChange={(e) => setTeamSize(e.target.value)}
                       variant="outlined"
                       className="border border-gray-300 rounded"
                     />
                     <TextField
                       label="作業時間（〇時間）"
-                      type="number"
+                      type="text"
                       value={workDuration?workDuration:0}
-                      onChange={(e) => setWorkDuration(Number(e.target.value) || 0)}
+                      onChange={(e) => setWorkDuration(e.target.value)}
                       variant="outlined"
                       className="border border-gray-300 rounded"
                     />
@@ -798,17 +796,17 @@ const DashboardPage = () => {
                     />
                     <TextField
                       label="班数（人）"
-                      type="number"
+                      type="text"
                       value={teamSize}
-                      onChange={(e) => setTeamSize(Number(e.target.value) || 0)}
+                      onChange={(e) => setTeamSize(e.target.value)}
                       variant="outlined"
                       className="border border-gray-300 rounded"
                     />
                     <TextField
-                      label="作業時間（時間）"
-                      type="number"
+                      label="作業期間（時間）"
+                      type="text"
                       value={workDuration}
-                      onChange={(e) => setWorkDuration(Number(e.target.value) || 0)}
+                      onChange={(e) => setWorkDuration(e.target.value)}
                       variant="outlined"
                       className="border border-gray-300 rounded"
                     />
