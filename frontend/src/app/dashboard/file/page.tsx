@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useDashboard } from '@/hooks/useDashboard';
 
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -65,6 +66,7 @@ export default function ExcelUploader() {
     }
   };
 
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentReservations = importedReservation.slice(indexOfFirstItem, indexOfLastItem);
@@ -84,6 +86,9 @@ export default function ExcelUploader() {
               tabIndex={-1}
               // onClick={handleUpload}
               startIcon={<CloudUploadIcon />}
+              sx={{
+                borderRadius: '10px',                 
+              }}
             >
               アップロード
               <VisuallyHiddenInput
