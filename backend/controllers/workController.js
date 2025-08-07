@@ -106,7 +106,7 @@ const createWork = async (req, res) => {
     const { work_name, flat_name, room_num, start_time, end_time, hose_length, required_tools, team_size, work_duration, key_management, notes, hose_placement, checkbox_list } = req.body;
 
     // Check if all required fields are provided
-    if (!work_name || !flat_name || !room_num || !start_time || !end_time) {
+    if (!work_name || !flat_name || !start_time || !end_time) {
       return res.status(400).json({ message: 'すべての必須フィールドを入力してください' });
     }
 
