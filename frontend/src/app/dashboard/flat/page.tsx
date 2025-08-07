@@ -510,7 +510,6 @@ const FlatPage = () => {
         <div className="bg-gray-900 p-8">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-white mb-8">物件一覧</h1>
-            <a href="http://localhost:3000/uploads/4afa5dd7-f59d-4c9c-8d04-f17d9035e9e7.xlsx" target="_blank" rel="noopener noreferrer">Open File</a>
             <div className="flex gap-3">
               <CustomButton
                 type="button"
@@ -1070,7 +1069,7 @@ const FlatPage = () => {
                       <p className="flex mt-4 text-black">{message}</p>
                     </div>                   
                   :
-                    <a href={`http://localhost:5000/uploads/${storedFileName}`} target="_blank" style={{ textDecoration: 'underline' }}>物件関連ファイルの資料ダウンロード</a>
+                    <a href={`https://taiyo.ai-reserve.jp/uploads/${storedFileName}`} target="_blank" style={{ textDecoration: 'underline' }}>物件関連ファイルの資料ダウンロード</a>
                   }
                     
                     {/* <p className='text-white'>{file}</p> */}
