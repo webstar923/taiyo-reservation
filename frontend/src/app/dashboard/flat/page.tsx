@@ -100,6 +100,8 @@ const currencies = [
   { "id": 19, "name": "防水・塗装工事" },
   { "id": 20, "name": "非常照明器具の更新" },
   { "id": 21, "name": "配電盤の更新" },
+  { "id": 22, "name": "排水菅清掃" },
+  { "id": 23, "name": "消防設備点検" },
 ];
 const weekdayOptions = [
   { key: "mon", label: "月" },
@@ -127,6 +129,7 @@ const FlatPage = () => {
     getWorkDataByFlat,
     changeFlatDetailInfo,
     getFlatDetailInfoByflatId,
+    uploadFlatInfoFile
   } = useDashboard();
   const [employees, setEmployees] = useState<
     { id: number; name: string; address: string }[]
@@ -153,13 +156,10 @@ const FlatPage = () => {
   const [endTime, setEndTime] = useState<string>("00");
   const [telNumber, setTelNumber] = useState("");
   const [faxNumber, setFaxNumber] = useState("");
+  const [message, setMessage] = useState('');
+  const [storedFileName, setStoredFileName] = useState("");
 
-  const handleNumberChange =
-    (setter: (value: string | "") => void) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      
-    };
+  
   type ManagerDays = {
     [key: string]: boolean;
   };
@@ -288,6 +288,7 @@ const FlatPage = () => {
       setTelNumber("");
       setFaxNumber("");
       setManagerDays({});
+      setStoredFileName("");
     } else {
       const info = data.flatDetailInfo;
       setParkingLocation(info.parking_location || "");
@@ -301,6 +302,7 @@ const FlatPage = () => {
       setEndTime(info.end_time || "00");
       setTelNumber(info.tel_number || "");
       setFaxNumber(info.fax_number || "");
+      setStoredFileName(info.file_data || "");
       try {
         const parsedDays = typeof info.manager_work_days === "string"
           ? JSON.parse(info.manager_work_days)
@@ -359,8 +361,8 @@ const FlatPage = () => {
       end_time: endTime,
       tel_number: telNumber,
       fax_number: faxNumber,
+      file_data:storedFileName
     };
-
     try {
       await changeFlatDetailInfo(detailData);
       notify("success", "成功!", "詳細情報を保存しました。");
@@ -477,6 +479,30 @@ const FlatPage = () => {
 
     doc.save("flat_data.pdf");
   };
+  const handleUploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];  // Optional chaining for safety
+    if (!file) {
+      setMessage('まずファイルを選択してください。');
+      return;
+    }
+    
+  
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await uploadFlatInfoFile(formData);
+      const data = await response.json();
+      setStoredFileName(data.storedFileName);
+      if (response.ok) {
+        setMessage('ファイルのアップロードに成功しました。');
+      } else {
+        setMessage('アップロードに失敗しました: ' + data.message);
+      }
+    } catch (error) {
+      setMessage('ファイルのアップロード中にエラーが発生しました');
+      console.error(error);  // Log the error if needed
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -484,6 +510,7 @@ const FlatPage = () => {
         <div className="bg-gray-900 p-8">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-white mb-8">物件一覧</h1>
+            <a href="http://localhost:3000/uploads/4afa5dd7-f59d-4c9c-8d04-f17d9035e9e7.xlsx" target="_blank" rel="noopener noreferrer">Open File</a>
             <div className="flex gap-3">
               <CustomButton
                 type="button"
@@ -1009,7 +1036,7 @@ const FlatPage = () => {
                     />
                     <TextField
                       label="FAX番号"
-                      type="text" 
+                      type="text"
                       variant="outlined"
                       className="w-full border border-gray-300 rounded"
                       value={faxNumber}
@@ -1018,8 +1045,35 @@ const FlatPage = () => {
                   </div>
                 </div>
                 <div className="flex justify-between mt-4 space-x-2">
-                  <div>
-                    <input type="file" name="" id="" />
+                  <div className="flex gap-4">
+                    {!storedFileName?
+                    <div>
+                      <Button
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        // onClick={handleUpload}
+                        startIcon={<CloudUploadIcon />}
+                        sx={{
+                          borderRadius: "10px",
+                        }}
+                      >
+                        アップロード
+                        <VisuallyHiddenInput
+                          type="file"
+                          accept="*.*"
+                          onChange={(event) => handleUploadFile(event)}
+                          multiple
+                        />
+                      </Button>
+                      <p className="flex mt-4 text-black">{message}</p>
+                    </div>                   
+                  :
+                    <a href={`http://localhost:5000/uploads/${storedFileName}`} target="_blank" style={{ textDecoration: 'underline' }}>物件関連ファイルの資料ダウンロード</a>
+                  }
+                    
+                    {/* <p className='text-white'>{file}</p> */}
                   </div>
                   <div className="flex gap-4">
                     <button

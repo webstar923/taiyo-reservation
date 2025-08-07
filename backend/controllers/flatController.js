@@ -119,6 +119,7 @@ const changeFlatDetailInfo = async (req, res) => {
       tel_number,
       fax_number,
       machine_location,
+      file_data
     } = req.body;
     
     if (!flat_id) {
@@ -143,6 +144,7 @@ const changeFlatDetailInfo = async (req, res) => {
         tel_number,
         fax_number,
         machine_location,
+        file_data
       });
 
       logger.logInfo(`新しい物件詳細情報が作成されました。`, req.id, req.originalUrl, req.method, 201, req.user ? req.user.id : null, req.ip);
@@ -162,6 +164,7 @@ const changeFlatDetailInfo = async (req, res) => {
     flatDetailInfo.tel_number = tel_number;
     flatDetailInfo.fax_number = fax_number;
     flatDetailInfo.machine_location = machine_location;
+    flatDetailInfo.file_data = file_data;
     await flatDetailInfo.save();
 
     logger.logInfo(`物件詳細情報が更新されました。`, req.id, req.originalUrl, req.method, 200, req.user ? req.user.id : null, req.ip);
