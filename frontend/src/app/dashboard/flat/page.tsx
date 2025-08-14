@@ -1071,14 +1071,22 @@ const FlatPage = () => {
                         </div>
                       )
                       : (
-                        <a
-                          href={`https://docs.google.com/viewer?url=https://taiyo.ai-reserve.jp/uploads/${storedFileName}&embedded=true`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ textDecoration: "underline" }}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            window.open(`https://taiyo.ai-reserve.jp/uploads/${storedFileName}`, "_blank")
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            color: "blue",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                          }}
                         >
                           物件関連ファイルの資料を開く
-                        </a>
+                        </button>
                       )}
 
                     {/* <p className='text-white'>{file}</p> */}
