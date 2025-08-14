@@ -683,7 +683,7 @@ const DashboardPage = () => {
                     />
                     <TextField
                       label="班数（〇人）"
-                      type="text"
+                      multiline
                       value={teamSize ? teamSize : 0}
                       onChange={(e) => setTeamSize(e.target.value)}
                       variant="outlined"
@@ -691,7 +691,7 @@ const DashboardPage = () => {
                     />
                     <TextField
                       label="作業時間（〇時間）"
-                      type="text"
+                      multiline
                       value={workDuration ? workDuration : 0}
                       onChange={(e) => setWorkDuration(e.target.value)}
                       variant="outlined"
