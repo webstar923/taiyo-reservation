@@ -671,40 +671,39 @@ const DashboardPage = () => {
                       className="w-[50%] border border-gray-300 rounded"
                     />
                   </div>
-                  <div className="w-full flex gap-3">
-                    <TextField
-                      label="ホースの長さ(m)"
-                      type="number"
-                      value={hoseLength ? hoseLength : 0}
-                      onChange={(e) =>
-                        setHoseLength(Number(e.target.value) || 0)}
-                      variant="outlined"
-                      className="border border-gray-300 rounded"
-                    />
-                    <TextField
-                      label="班数（〇人）"
-                      multiline
-                      value={teamSize ? teamSize : 0}
-                      onChange={(e) => setTeamSize(e.target.value)}
-                      variant="outlined"
-                      className="border border-gray-300 rounded"
-                    />
-                    <TextField
-                      label="作業時間（〇時間）"
-                      multiline
-                      value={workDuration ? workDuration : 0}
-                      onChange={(e) => setWorkDuration(e.target.value)}
-                      variant="outlined"
-                      className="border border-gray-300 rounded"
-                    />
-                  </div>
+
                   <TextField
-                    label="ホースの設置・降ろす位置"
+                    label="ホースの長さ(m)"
+                    type="number"
+                    value={hoseLength ? hoseLength : 0}
+                    onChange={(e) => setHoseLength(Number(e.target.value) || 0)}
+                    variant="outlined"
+                    className="border border-gray-300 rounded w-full"
+                  />
+                  <TextField
+                    label="班数（〇人）"
+                    type="number"
+                    value={teamSize ? teamSize : 0}
+                    onChange={(e) => setTeamSize(e.target.value)}
+                    variant="outlined"
+                    className="border border-gray-300 rounded w-full"
+                  />
+                  <TextField
+                    label="作業時間（〇時間）"
+                    type="number"
+                    value={workDuration ? workDuration : 0}
+                    onChange={(e) => setWorkDuration(e.target.value)}
+                    variant="outlined"
+                    className="border border-gray-300 rounded w-full"
+                  />
+
+                  <TextField
+                    label="ホースの設置・降ろす位置"       
                     type="text"
                     value={hosePlacement ? hosePlacement : ""}
                     onChange={(e) => setHosePlacement(e.target.value)}
                     variant="outlined"
-                    className="w-full border border-gray-300 rounded"
+                    className="w-full border border-gray-300 rounded w-full"
                   />
                   <TextField
                     label="必要な道具"
