@@ -126,7 +126,7 @@ export default function ExcelUploader() {
                     <td className="px-6 py-3 whitespace-nowrap">{reservation.flat_name}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{reservation.room_num}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{reservation.work_name}</td>
-                    <td className="px-6 py-3 whitespace-nowrap">{reservation.reservation_time ? new Date(reservation.reservation_time).toISOString().split('T')[0] : 'N/A'}</td>
+                    <td className="px-6 py-3 whitespace-nowrap">{reservation.reservation_time}</td>
                     <td className="px-6 py-3 whitespace-nowrap">{reservation.division}</td>
                     
                   </tr>

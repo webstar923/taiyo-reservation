@@ -150,7 +150,7 @@ const FlatPage = () => {
   const [parkingLocation, setParkingLocation] = useState("");
   const [machineLocation, setMachineLocation] = useState("");
   const [waterTapLocation, setWaterTapLocation] = useState("");
-  const [buildingStructure, setBuildingStructure] = useState("");
+  const [buildingStructure, setBuildingStructure] = useState("横移動可");
   const [autoLockNumber, setAutoLockNumber] = useState("");
   const [keyBoxLocation, setKeyBoxLocation] = useState("");
   const [endTime, setEndTime] = useState<string>("00");
@@ -1024,12 +1024,12 @@ const FlatPage = () => {
                     </TextField>
                   </div>
 
-                  <div className="flex gap-2">
+                
                     <TextField
                       label="現地電話番号"
                       type="number"
                       variant="outlined"
-                      className="w-full border border-gray-300 rounded"
+                      className="w-full border border-gray-300 rounded w-full"
                       value={telNumber}
                       onChange={(e) => setTelNumber(e.target.value)}
                     />
@@ -1037,11 +1037,11 @@ const FlatPage = () => {
                       label="FAX番号"
                       multiline
                       variant="outlined"
-                      className="w-full border border-gray-300 rounded"
+                      className="w-full border border-gray-300 rounded w-full"
                       value={faxNumber}
                       onChange={(e) => setFaxNumber(e.target.value)}
                     />
-                  </div>
+                  
                 </div>
                 <div className="flex justify-between mt-4 space-x-2">
                   <div className="flex gap-4">

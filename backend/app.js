@@ -35,6 +35,8 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
   if (path.extname(req.file.originalname)=== '.xlsx') {
     try {
+      console.log("-----------------",req.file.path);
+      
       const data = await processExcel(req.file.path);
       return res.json({ message: 'File processed successfully', data });
     } catch (error) {
