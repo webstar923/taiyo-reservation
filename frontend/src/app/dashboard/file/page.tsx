@@ -76,7 +76,7 @@ export default function ExcelUploader() {
       <div className="flex flex-col">
         <div className="bg-gray-900 p-8">
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-white mb-8">ファイルーアップロード</h1>
+            <h1 className="text-3xl font-bold text-white mb-8">予約データ取り込み</h1>
           </div>
           <div className="mb-10">            
             <Button
